@@ -1,17 +1,20 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 import express from 'express'
-import hbs from 'hbs'
+import hbs from 'hbs' // 
 import path from 'path'
-import morgan from 'morgan' //menambahkan morgan
-import bodyParser from 'body-parser'
+import morgan from 'morgan' //menambahkan morgan untuk menampilkan log
+import bodyParser from 'body-parser' // membaca body dari POST
 //const database = require('./database')
-import { getProduct, initDatabase, initTable, insertProduct } from './database.js'
-import fileUpload from 'express-fileupload'
-import fs from 'fs'
+import { getProduct, initDatabase, initTable, insertProduct } from './database.js' // memanggil method
+import fileUpload from 'express-fileupload' // handle upload file
+import fs from 'fs' // membaca file gambar
 
 const __dirname = path.resolve()
 
 const app = express()
-const db = initDatabase()
+const db = initDatabase() // menggunakan method pada database.js
 initTable(db)
 
 app.set('views', __dirname + '/layouts')
@@ -21,7 +24,7 @@ app.engine('html',hbs.__express) // mengganti engine mengarah ke file .html
 //use file parser
 app.use(fileUpload())
 
-
+//use parser body
 app.use(bodyParser.urlencoded())
 
 //log incoming request menggunakan morgan
@@ -60,6 +63,8 @@ app.get('/add-product', (req, res, nex) => { // metode get
 app.post('/add-product', (req, res, nex) => { //metode post
     console.log("Req body",req.body)
     console.log('File', req.files)
+
+    // get file name
     const fileName = Date.now() + req.files.photo.name
     fs.writeFile(path.join(__dirname, '/files/', fileName),req.files.photo.data, (err) => {
         if(err){
@@ -81,6 +86,7 @@ app.use((err, req, res, next) => {
     res.send(err.message)
 })
 
-app.listen(8000, () => {
-    console.log('App listen on port 8000')
+// use port enviroment variable
+app.listen(process.env.PORT, () => {
+    console.log(`App listen on port ${process.env.PORT}`)
 })
