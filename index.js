@@ -29,10 +29,14 @@ app.get('/product', (req,res,next) => {
     res.render('product')
 })
 
+app.get('/add-product', (req, res, nex) => {
+    res.send(req.query)
+})
+
 app.use((err, req, res, next) => {
     res.send(err.message)
 })
 
-app.listen(9000, () => {
+app.listen(8000, () => {
     console.log('App listen on port 8080')
 })
